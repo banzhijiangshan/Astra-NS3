@@ -17,6 +17,7 @@
 
 #include "queue.h"
 
+#include "ns3/NV-packet.h"
 #include "ns3/abort.h"
 #include "ns3/enum.h"
 #include "ns3/trace-source-accessor.h"
@@ -30,6 +31,10 @@ NS_LOG_COMPONENT_DEFINE("Queue");
 NS_OBJECT_ENSURE_REGISTERED(QueueBase);
 NS_OBJECT_TEMPLATE_CLASS_DEFINE(Queue, Packet);
 NS_OBJECT_TEMPLATE_CLASS_DEFINE(Queue, QueueDiscItem);
+// Added by myself
+NS_OBJECT_TEMPLATE_CLASS_DEFINE(Queue, NVPacket);
+
+//////////////////
 
 TypeId
 QueueBase::GetTypeId()

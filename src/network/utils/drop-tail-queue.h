@@ -20,6 +20,8 @@
 
 #include "queue.h"
 
+#include "ns3/NV-packet.h"
+
 namespace ns3
 {
 
@@ -149,6 +151,9 @@ DropTailQueue<Item>::Peek() const
 // in drop-tail-queue.cc
 extern template class DropTailQueue<Packet>;
 extern template class DropTailQueue<QueueDiscItem>;
+// Added by myself
+extern template class DropTailQueue<NVPacket>;
+//////////////////
 
 } // namespace ns3
 
