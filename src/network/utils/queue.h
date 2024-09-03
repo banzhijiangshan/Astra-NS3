@@ -26,6 +26,7 @@
 #include "queue-item.h"
 #include "queue-size.h"
 
+#include "ns3/NV-packet.h"
 #include "ns3/log.h"
 #include "ns3/object.h"
 #include "ns3/packet.h"
@@ -196,8 +197,8 @@ class QueueBase : public Object
      */
     enum QueueMode
     {
-        QUEUE_MODE_PACKETS,     /**< Use number of packets for maximum queue size */
-        QUEUE_MODE_BYTES,       /**< Use number of bytes for maximum queue size */
+        QUEUE_MODE_PACKETS, /**< Use number of packets for maximum queue size */
+        QUEUE_MODE_BYTES,   /**< Use number of bytes for maximum queue size */
     };
 
 #if 0
@@ -688,6 +689,9 @@ Queue<Item, Container>::DropAfterDequeue(Ptr<Item> item)
 // NS_OBJECT_TEMPLATE_CLASS_DEFINE (Queue,QueueDiscItem), which are included in queue.cc
 extern template class Queue<Packet>;
 extern template class Queue<QueueDiscItem>;
+// Added by myself
+extern template class Queue<NVPacket>;
+//////////////////
 
 } // namespace ns3
 

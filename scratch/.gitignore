@@ -4,5 +4,6 @@
 
 !nested-subdir/
 !subdir/
+!topology/
 !scratch-simulator.cc
 !CMakeLists.txt

@@ -21,6 +21,7 @@ build_lib(
     ${mpi_sources}
     helper/point-to-point-helper.cc
     helper/qbb-helper.cc
+    helper/NV-helper.cc
     model/cn-header.cc
     model/pause-header.cc
     model/pint.cc
@@ -37,11 +38,15 @@ build_lib(
     model/rdma-queue-pair.cc
     model/switch-mmu.cc
     model/switch-node.cc
+    model/NVLink-net-device.cc
+    model/NVswitch-node.cc
+    model/p2p-NVlink-channel.cc
   HEADER_FILES
     ${mpi_headers}
     helper/point-to-point-helper.h
     helper/qbb-helper.h
     helper/sim-setting.h
+    helper/NV-helper.h
     model/cn-header.h
     model/pause-header.h
     model/pint.h
@@ -59,6 +64,9 @@ build_lib(
     model/switch-mmu.h
     model/switch-node.h
     model/trace-format.h
+    model/NVLink-net-device.h
+    model/NVswitch-node.h
+    model/p2p-NVlink-channel.h
   LIBRARIES_TO_LINK ${libnetwork}
                     ${mpi_libraries}
                     ${libinternet}

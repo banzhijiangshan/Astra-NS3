@@ -17,6 +17,8 @@
 
 #include "drop-tail-queue.h"
 
+#include "ns3/NV-packet.h"
+
 namespace ns3
 {
 
@@ -24,5 +26,8 @@ NS_LOG_COMPONENT_DEFINE("DropTailQueue");
 
 NS_OBJECT_TEMPLATE_CLASS_DEFINE(DropTailQueue, Packet);
 NS_OBJECT_TEMPLATE_CLASS_DEFINE(DropTailQueue, QueueDiscItem);
+// Added by myself
+NS_OBJECT_TEMPLATE_CLASS_DEFINE(DropTailQueue, NVPacket);
+//////////////////
 
 } // namespace ns3
