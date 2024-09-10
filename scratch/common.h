@@ -898,8 +898,8 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
         for (uint32_t j = 0; j < 8; j++)
         {
             uint32_t index = (i - node_num) * 8 + j;
-            nv.SetNVLinkNetDeviceAttribute("DataRate", StringValue("7200Gbps"));
-            nv.SetChannelAttribute("Delay", StringValue("0ms"));
+            nv.SetNVLinkNetDeviceAttribute("DataRate", StringValue("900GBps"));
+            nv.SetChannelAttribute("Delay", StringValue("0.0001ms"));
             Ptr<NVSwitchNode> nvsw = DynamicCast<NVSwitchNode>(n.Get(i));
             NetDeviceContainer d = nv.Install(n.Get(index), nvsw);
             DynamicCast<NVLinkNetDevice>(d.Get(0))->m_flowfinishCb = MakeCallback(NV_finish);
