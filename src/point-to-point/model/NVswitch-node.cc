@@ -34,6 +34,14 @@ NVSwitchNode::NVSwitchNode()
     m_node_type = 2;
 }
 
+NVSwitchNode::NVSwitchNode(int systemId)
+    : Node(systemId)
+{
+    NodeId = 0;
+    m_node_type = 2;
+    m_nvsid = systemId;
+}
+
 uint32_t
 NVSwitchNode::AddDevice(Ptr<NVLinkNetDevice> device)
 {
@@ -55,6 +63,12 @@ NVSwitchNode::GetAndSend(Ptr<NVPacket> p, int dst) // dst: node id
     int outDev = GetOutDev(dst);
     Ptr<NVLinkNetDevice> outDevice = m_devices[outDev];
     outDevice->SwitchSend(p);
+}
+
+uint32_t
+NVSwitchNode::GetSystemId() const
+{
+    return m_nvsid;
 }
 
 } // namespace ns3

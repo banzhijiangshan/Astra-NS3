@@ -40,6 +40,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <mpi.h>
 #include <time.h>
 #include <unordered_map>
 
@@ -727,7 +728,8 @@ SetConfig()
 
 void
 SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
-             void (*NV_finish)(int, int, uint32_t, uint32_t))
+             void (*NV_finish)(int, int, uint32_t, uint32_t),
+             uint32_t mpi_enabled)
 {
     topof.open(topology_file.c_str());
     flowf.open(flow_file.c_str());
@@ -762,24 +764,57 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
         node_type[i] = 2;
     }
     //////////////////
-    for (uint32_t i = 0; i < node_num; i++)
+    if (mpi_enabled == 0)
     {
-        if (node_type[i] == 0)
-            n.Add(CreateObject<Node>());
-        else
+        for (uint32_t i = 0; i < node_num; i++)
         {
-            Ptr<SwitchNode> sw = CreateObject<SwitchNode>();
-            n.Add(sw);
-            sw->SetAttribute("EcnEnabled", BooleanValue(enable_qcn));
+            if (node_type[i] == 0)
+                n.Add(CreateObject<Node>());
+            else
+            {
+                Ptr<SwitchNode> sw = CreateObject<SwitchNode>();
+                n.Add(sw);
+                sw->SetAttribute("EcnEnabled", BooleanValue(enable_qcn));
+            }
+        }
+        // Added by myself
+        for (uint32_t i = node_num; i < All_num; i++)
+        {
+            if (node_type[i] == 2)
+            {
+                Ptr<NVSwitchNode> nvsw = CreateObject<NVSwitchNode>();
+                n.Add(nvsw);
+            }
         }
     }
-    // Added by myself
-    for (uint32_t i = node_num; i < All_num; i++)
+    else
     {
-        if (node_type[i] == 2)
+        int range = All_num / mpi_enabled;
+        for (uint32_t i = 0; i < node_num; i++)
         {
-            Ptr<NVSwitchNode> nvsw = CreateObject<NVSwitchNode>();
-            n.Add(nvsw);
+            int rank = i / range;
+            if (rank >= mpi_enabled)
+                rank = mpi_enabled - 1;
+            if (node_type[i] == 0)
+                n.Add(CreateObject<Node>(rank));
+            else
+            {
+                Ptr<SwitchNode> sw = CreateObject<SwitchNode>(rank);
+                n.Add(sw);
+                sw->SetAttribute("EcnEnabled", BooleanValue(enable_qcn));
+            }
+        }
+        // Added by myself
+        for (uint32_t i = node_num; i < All_num; i++)
+        {
+            int rank = i / range;
+            if (rank >= mpi_enabled)
+                rank = mpi_enabled - 1;
+            if (node_type[i] == 2)
+            {
+                Ptr<NVSwitchNode> nvsw = CreateObject<NVSwitchNode>(rank);
+                n.Add(nvsw);
+            }
         }
     }
     //////////////////
