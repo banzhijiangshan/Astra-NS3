@@ -24,6 +24,7 @@ class NVSwitchNode : public Node
     static TypeId GetTypeId();
     static const int nDevices = 8;
     NVSwitchNode();
+    NVSwitchNode(int systemId);
 
     int NodeId;
     std::vector<Ptr<NVLinkNetDevice>> m_devices;
@@ -32,6 +33,8 @@ class NVSwitchNode : public Node
     int GetOutDev(int dst);
     void GetAndSend(Ptr<NVPacket> p, int dst);
     uint32_t AddDevice(Ptr<NVLinkNetDevice> device);
+    uint32_t GetSystemId() const;
+    uint32_t m_nvsid;
 };
 
 } // namespace ns3
