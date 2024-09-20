@@ -9,8 +9,11 @@
 #include "ns3/config.h"
 #include "ns3/drop-tail-queue.h"
 #include "ns3/log.h"
+#include "ns3/mpi-interface.h"
+#include "ns3/mpi-receiver.h"
 #include "ns3/names.h"
 #include "ns3/p2p-NVlink-channel.h"
+#include "ns3/p2p-NVlink-remote-channel.h"
 #include "ns3/packet.h"
 #include "ns3/queue.h"
 #include "ns3/simulator.h"
@@ -65,7 +68,31 @@ NVHelper::Install(Ptr<Node> a, Ptr<NVSwitchNode> b)
     Ptr<DropTailQueue<NVPacket>> queueB = m_queueFactory.Create<DropTailQueue<NVPacket>>();
     deviceA->SetQueue(queueA);
     deviceB->SetQueue(queueB);
-    Ptr<NVLink> channel = m_channelFactory.Create<NVLink>();
+
+    bool useNormalChannel = true;
+    Ptr<NVLink> channel = 0;
+    if (MpiInterface::IsEnabled())
+    {
+        uint32_t n1SystemId = a->GetSystemId();
+        uint32_t n2SystemId = b->GetSystemId();
+        uint32_t currSystemId = MpiInterface::GetSystemId();
+        if (n1SystemId != currSystemId || n2SystemId != currSystemId)
+        {
+            useNormalChannel = false;
+        }
+    }
+    if (useNormalChannel)
+        channel = m_channelFactory.Create<NVLink>();
+    else
+    {
+        channel = m_remoteChannelFactory.Create<RemoteNVLink>();
+        Ptr<MpiReceiver> mpiRecA = CreateObject<MpiReceiver>();
+        Ptr<MpiReceiver> mpiRecB = CreateObject<MpiReceiver>();
+        mpiRecA->SetReceiveCallbackNV(MakeCallback(&NVLinkNetDevice::Receive, deviceA));
+        mpiRecB->SetReceiveCallbackNV(MakeCallback(&NVLinkNetDevice::Receive, deviceB));
+        deviceA->AggregateObject(mpiRecA);
+        deviceB->AggregateObject(mpiRecB);
+    }
 
     deviceA->Attach(channel);
     deviceB->Attach(channel);

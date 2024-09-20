@@ -41,6 +41,7 @@ build_lib(
     model/NVLink-net-device.cc
     model/NVswitch-node.cc
     model/p2p-NVlink-channel.cc
+    model/p2p-NVlink-remote-channel.cc
   HEADER_FILES
     ${mpi_headers}
     helper/point-to-point-helper.h
@@ -67,6 +68,7 @@ build_lib(
     model/NVLink-net-device.h
     model/NVswitch-node.h
     model/p2p-NVlink-channel.h
+    model/p2p-NVlink-remote-channel.h
   LIBRARIES_TO_LINK ${libnetwork}
                     ${mpi_libraries}
                     ${libinternet}
