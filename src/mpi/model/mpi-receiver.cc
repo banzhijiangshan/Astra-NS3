@@ -47,6 +47,13 @@ MpiReceiver::SetReceiveCallback(Callback<void, Ptr<Packet>> callback)
     m_rxCallback = callback;
 }
 
+// Added by myself
+void
+MpiReceiver::SetReceiveCallbackNV(Callback<void, Ptr<NVPacket>> callback)
+{
+    m_rxCallbackNV = callback;
+}
+
 void
 MpiReceiver::Receive(Ptr<Packet> p)
 {

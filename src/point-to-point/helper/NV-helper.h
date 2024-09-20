@@ -36,6 +36,7 @@ class NVHelper
     ObjectFactory m_queueFactory;
     ObjectFactory m_deviceFactory;
     ObjectFactory m_channelFactory;
+    ObjectFactory m_remoteChannelFactory;
 };
 } // namespace ns3
 

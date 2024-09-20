@@ -25,6 +25,7 @@
 #ifndef NS3_MPI_RECEIVER_H
 #define NS3_MPI_RECEIVER_H
 
+#include "ns3/NV-packet.h"
 #include "ns3/object.h"
 #include "ns3/packet.h"
 
@@ -65,11 +66,16 @@ class MpiReceiver : public Object
      */
     void SetReceiveCallback(Callback<void, Ptr<Packet>> callback);
 
+    void SetReceiveCallbackNV(Callback<void, Ptr<NVPacket>> callback);
+
   private:
     void DoDispose() override;
 
     /** Callback to send received packets to. */
     Callback<void, Ptr<Packet>> m_rxCallback;
+
+    // Added by myself 2024-09-20
+    Callback<void, Ptr<NVPacket>> m_rxCallbackNV;
 };
 
 } // namespace ns3
