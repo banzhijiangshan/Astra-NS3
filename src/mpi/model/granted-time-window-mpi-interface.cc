@@ -285,17 +285,21 @@ GrantedTimeWindowMpiInterface::ReceiveMessages()
         Ptr<Node> pNode = NodeList::GetNode(node);
         Ptr<MpiReceiver> pMpiRec = nullptr;
         uint32_t nDevices = pNode->GetNDevices();
+        printf("nodeid = %d\n", pNode->GetId());
+        printf("nodetype = %s\n", pNode->GetInstanceTypeId().GetName().c_str());
         for (uint32_t i = 0; i < nDevices; ++i)
         {
             Ptr<NetDevice> pThisDev = pNode->GetDevice(i);
             if (pThisDev->GetIfIndex() == dev)
             {
+                printf("Name = %s\n", pThisDev->GetInstanceTypeId().GetName().c_str());
                 pMpiRec = pThisDev->GetObject<MpiReceiver>();
                 break;
             }
         }
 
-        NS_ASSERT(pNode && pMpiRec);
+        NS_ASSERT(pNode);
+        NS_ASSERT(pMpiRec);
 
         // Schedule the rx event
         Simulator::ScheduleWithContext(pNode->GetId(),

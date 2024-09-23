@@ -31,11 +31,9 @@
 
 using namespace std;
 
-NS_LOG_COMPONENT_DEFINE("QbbRemoteChannel");
-
 namespace ns3
 {
-
+NS_LOG_COMPONENT_DEFINE("QbbRemoteChannel");
 NS_OBJECT_ENSURE_REGISTERED(QbbRemoteChannel);
 
 TypeId
@@ -67,7 +65,7 @@ QbbRemoteChannel::TransmitStart(Ptr<Packet> p, Ptr<QbbNetDevice> src, Time txTim
 
 #ifdef NS3_MPI
     // Calculate the rxTime (absolute)
-    printf("TransmitStart!!!!\n");
+    // printf("TransmitStart!!!!\n");
     Time rxTime = Simulator::Now() + txTime + GetDelay();
     MpiInterface::SendPacket(p, rxTime, dst->GetNode()->GetId(), dst->GetIfIndex());
 #else
