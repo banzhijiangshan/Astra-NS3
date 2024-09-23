@@ -14,10 +14,10 @@
 
 using namespace std;
 
-NS_LOG_COMPONENT_DEFINE("RemoteNVLink");
-
 namespace ns3
 {
+NS_LOG_COMPONENT_DEFINE("RemoteNVLink");
+
 NS_OBJECT_ENSURE_REGISTERED(RemoteNVLink);
 
 TypeId

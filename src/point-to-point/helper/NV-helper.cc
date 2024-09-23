@@ -28,6 +28,7 @@ NVHelper::NVHelper()
     m_queueFactory.SetTypeId("ns3::DropTailQueue<NVPacket>");
     m_deviceFactory.SetTypeId("ns3::NVLinkNetDevice");
     m_channelFactory.SetTypeId("ns3::NVLink");
+    m_remoteChannelFactory.SetTypeId("ns3::RemoteNVLink");
 }
 
 NVHelper::~NVHelper()
