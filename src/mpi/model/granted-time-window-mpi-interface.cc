@@ -275,6 +275,12 @@ GrantedTimeWindowMpiInterface::ReceiveMessages()
         uint32_t node = *pData++;
         uint32_t dev = *pData++;
 
+        int r, s;
+        MPI_Comm_size(MPI_COMM_WORLD, &s);
+        printf("mpi_size = %d ", s);
+        MPI_Comm_rank(MPI_COMM_WORLD, &r);
+        printf("mpi_rank = %d, node = %d, dev = %d\n", r, node, dev);
+
         Time rxTime(time);
 
         count -= sizeof(time) + sizeof(node) + sizeof(dev);
@@ -285,7 +291,7 @@ GrantedTimeWindowMpiInterface::ReceiveMessages()
         Ptr<Node> pNode = NodeList::GetNode(node);
         Ptr<MpiReceiver> pMpiRec = nullptr;
         uint32_t nDevices = pNode->GetNDevices();
-        printf("nodeid = %d\n", pNode->GetId());
+        printf("nodeid = %d ", pNode->GetId());
         printf("nodetype = %s\n", pNode->GetInstanceTypeId().GetName().c_str());
         for (uint32_t i = 0; i < nDevices; ++i)
         {
