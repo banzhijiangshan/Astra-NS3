@@ -277,9 +277,9 @@ GrantedTimeWindowMpiInterface::ReceiveMessages()
 
         int r, s;
         MPI_Comm_size(MPI_COMM_WORLD, &s);
-        printf("mpi_size = %d ", s);
+        // printf("mpi_size = %d ", s);
         MPI_Comm_rank(MPI_COMM_WORLD, &r);
-        printf("mpi_rank = %d, node = %d, dev = %d\n", r, node, dev);
+        // printf("mpi_rank = %d, node = %d, dev = %d\n", r, node, dev);
 
         Time rxTime(time);
 
@@ -291,14 +291,14 @@ GrantedTimeWindowMpiInterface::ReceiveMessages()
         Ptr<Node> pNode = NodeList::GetNode(node);
         Ptr<MpiReceiver> pMpiRec = nullptr;
         uint32_t nDevices = pNode->GetNDevices();
-        printf("nodeid = %d ", pNode->GetId());
-        printf("nodetype = %s\n", pNode->GetInstanceTypeId().GetName().c_str());
+        // printf("nodeid = %d ", pNode->GetId());
+        // printf("nodetype = %s\n", pNode->GetInstanceTypeId().GetName().c_str());
         for (uint32_t i = 0; i < nDevices; ++i)
         {
             Ptr<NetDevice> pThisDev = pNode->GetDevice(i);
             if (pThisDev->GetIfIndex() == dev)
             {
-                printf("Name = %s\n", pThisDev->GetInstanceTypeId().GetName().c_str());
+                // printf("Name = %s\n", pThisDev->GetInstanceTypeId().GetName().c_str());
                 pMpiRec = pThisDev->GetObject<MpiReceiver>();
                 break;
             }
