@@ -41,6 +41,7 @@
 #include <fstream>
 #include <iostream>
 #include <mpi.h>
+#include <set>
 #include <time.h>
 #include <unordered_map>
 
@@ -92,6 +93,10 @@ string qlen_mon_file;
 
 unordered_map<uint64_t, uint32_t> rate2kmax, rate2kmin;
 unordered_map<uint64_t, double> rate2pmax;
+
+// Added by myself
+// map rank id to nodes id on it
+unordered_map<int, set<int>> mpirank_nodes_map;
 
 /************************************************
  * Runtime varibles
@@ -749,6 +754,7 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
     uint32_t npu_num = node_num - switch_num;
     uint32_t NVswitch_num = npu_num / 8;
     uint32_t All_num = node_num + NVswitch_num;
+    // printf("%d %d %d\n", npu_num, NVswitch_num, All_num);
     //////////////////
 
     std::vector<uint32_t> node_type(All_num, 0);
@@ -789,31 +795,39 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
     }
     else
     {
-        int range = All_num / mpi_enabled;
-        for (uint32_t i = 0; i < node_num; i++)
+        int range1 = npu_num / mpi_enabled;
+        int range2 = switch_num / mpi_enabled;
+        int range3 = NVswitch_num / mpi_enabled;
+        for (uint32_t i = 0; i < npu_num; i++)
         {
-            int rank = i / range;
-            if (rank >= mpi_enabled)
-                rank = mpi_enabled - 1;
+            int rank1 = i / range1;
             if (node_type[i] == 0)
-                n.Add(CreateObject<Node>(rank));
-            else
-            {
-                Ptr<SwitchNode> sw = CreateObject<SwitchNode>(rank);
-                n.Add(sw);
-                sw->SetAttribute("EcnEnabled", BooleanValue(enable_qcn));
-            }
+                n.Add(CreateObject<Node>(rank1));
+            mpirank_nodes_map[rank1].insert(i);
         }
         // Added by myself
+        for (uint32_t i = npu_num; i < node_num; i++)
+        {
+            int rank2 = (i - npu_num) / range2;
+            if (rank2 >= mpi_enabled)
+                rank2 = mpi_enabled - 1;
+            if (node_type[i] == 1)
+            {
+                Ptr<SwitchNode> sw = CreateObject<SwitchNode>(rank2);
+                n.Add(sw);
+                sw->SetAttribute("EcnEnabled", BooleanValue(enable_qcn));
+                mpirank_nodes_map[rank2].insert(i);
+            }
+        }
         for (uint32_t i = node_num; i < All_num; i++)
         {
-            int rank = i / range;
-            if (rank >= mpi_enabled)
-                rank = mpi_enabled - 1;
+            int rank3 = (i - node_num) / range3;
+            // printf("rank:%d\n", rank3);
             if (node_type[i] == 2)
             {
-                Ptr<NVSwitchNode> nvsw = CreateObject<NVSwitchNode>(rank);
+                Ptr<NVSwitchNode> nvsw = CreateObject<NVSwitchNode>(rank3);
                 n.Add(nvsw);
+                mpirank_nodes_map[rank3].insert(i);
             }
         }
     }

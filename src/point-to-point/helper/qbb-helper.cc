@@ -295,6 +295,7 @@ QbbHelper::Install(Ptr<Node> a, Ptr<Node> b)
     }
     else
     {
+        // printf("Create remote channel\n");
         channel = m_remoteChannelFactory.Create<QbbRemoteChannel>();
         Ptr<MpiReceiver> mpiRecA = CreateObject<MpiReceiver>();
         Ptr<MpiReceiver> mpiRecB = CreateObject<MpiReceiver>();
@@ -308,6 +309,21 @@ QbbHelper::Install(Ptr<Node> a, Ptr<Node> b)
     devB->Attach(channel);
     container.Add(devA);
     container.Add(devB);
+
+    /*if (!useNormalChannel)
+    {
+        printf("dev A: %d on node %d, dev B: %d on node %d\n",
+               devA->GetIfIndex(),
+               a->GetId(),
+               devB->GetIfIndex(),
+               b->GetId());
+        if (devA->GetObject<MpiReceiver>())
+        {
+            printf("mpi-receiver attached to devA\n");
+        }
+        else
+            printf("mpi-receiver not attached to devA\n");
+    }*/
 
     return container;
 }
