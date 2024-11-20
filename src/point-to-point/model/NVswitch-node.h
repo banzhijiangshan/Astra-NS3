@@ -22,7 +22,7 @@ class NVSwitchNode : public Node
 {
   public:
     static TypeId GetTypeId();
-    static const int nDevices = 8;
+    uint32_t nDevices;
     NVSwitchNode();
     NVSwitchNode(int systemId);
 
