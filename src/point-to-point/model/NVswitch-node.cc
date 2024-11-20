@@ -52,7 +52,7 @@ NVSwitchNode::AddDevice(Ptr<NVLinkNetDevice> device)
 }
 
 int
-NVSwitchNode::GetOutDev(int dst) // 0~7
+NVSwitchNode::GetOutDev(int dst) // 0~nDevices-1
 {
     return dst % nDevices;
 }

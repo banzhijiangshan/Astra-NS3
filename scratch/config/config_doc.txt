@@ -1,3 +1,5 @@
+SCALEUP 8 {GPU number in a server}
+
 ENABLE_QCN 1 {0: disable, 1: enable}
 USE_DYNAMIC_PFC_THRESHOLD 1 {0: disable, 1: enable}
 

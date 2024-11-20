@@ -97,6 +97,7 @@ unordered_map<uint64_t, double> rate2pmax;
 // Added by myself
 // map rank id to nodes id on it
 unordered_map<int, set<int>> mpirank_nodes_map;
+uint32_t scale_up_num = 8;
 
 /************************************************
  * Runtime varibles
@@ -695,6 +696,14 @@ ReadConf(string network_configuration)
         {
             conf >> pint_prob;
         }
+        else if (key.compare("SCALEUP") == 0)
+        {
+            conf >> scale_up_num;
+        }
+        else
+        {
+            std::cout << "Error: unknown key: " << key << std::endl;
+        }
         fflush(stdout);
     }
     conf.close();
@@ -752,7 +761,7 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
 
     // Added by myself
     uint32_t npu_num = node_num - switch_num;
-    uint32_t NVswitch_num = npu_num / 8;
+    uint32_t NVswitch_num = npu_num / scale_up_num;
     uint32_t All_num = node_num + NVswitch_num;
     // printf("%d %d %d\n", npu_num, NVswitch_num, All_num);
     //////////////////
@@ -944,12 +953,13 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
     NVHelper nv;
     for (uint32_t i = node_num; i < All_num; i++)
     {
-        for (uint32_t j = 0; j < 8; j++)
+        for (uint32_t j = 0; j < scale_up_num; j++)
         {
-            uint32_t index = (i - node_num) * 8 + j;
+            uint32_t index = (i - node_num) * scale_up_num + j;
             nv.SetNVLinkNetDeviceAttribute("DataRate", StringValue("900GBps"));
             nv.SetChannelAttribute("Delay", StringValue("0.0001ms"));
             Ptr<NVSwitchNode> nvsw = DynamicCast<NVSwitchNode>(n.Get(i));
+            nvsw->nDevices = scale_up_num;
             NetDeviceContainer d = nv.Install(n.Get(index), nvsw);
             DynamicCast<NVLinkNetDevice>(d.Get(0))->m_flowfinishCb = MakeCallback(NV_finish);
             DynamicCast<NVLinkNetDevice>(d.Get(1))->m_flowfinishCb = MakeCallback(NV_finish);
