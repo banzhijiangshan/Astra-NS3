@@ -700,10 +700,6 @@ ReadConf(string network_configuration)
         {
             conf >> scale_up_num;
         }
-        else
-        {
-            std::cout << "Error: unknown key: " << key << std::endl;
-        }
         fflush(stdout);
     }
     conf.close();
@@ -957,7 +953,7 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
         {
             uint32_t index = (i - node_num) * scale_up_num + j;
             nv.SetNVLinkNetDeviceAttribute("DataRate", StringValue("900GBps"));
-            nv.SetChannelAttribute("Delay", StringValue("0.0001ms"));
+            nv.SetChannelAttribute("Delay", StringValue("0.001ms"));
             Ptr<NVSwitchNode> nvsw = DynamicCast<NVSwitchNode>(n.Get(i));
             nvsw->nDevices = scale_up_num;
             NetDeviceContainer d = nv.Install(n.Get(index), nvsw);
@@ -994,6 +990,7 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
                 Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
                 // set ecn
                 uint64_t rate = dev->GetDataRate().GetBitRate();
+                // printf("rate %lu\n", rate);
                 NS_ASSERT_MSG(rate2kmin.find(rate) != rate2kmin.end(),
                               "must set kmin for each link speed");
                 NS_ASSERT_MSG(rate2kmax.find(rate) != rate2kmax.end(),

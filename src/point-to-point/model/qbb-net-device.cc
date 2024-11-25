@@ -639,7 +639,7 @@ QbbNetDevice::TransmitStartWithParticipants(Ptr<Packet> p)
 {
     NS_LOG_FUNCTION(this << p);
     NS_LOG_LOGIC("UID is " << p->GetUid() << ")");
-    printf("the same node\n");
+    // printf("the same node\n");
 
     NS_ASSERT_MSG(m_txMachineState == READY, "Must be READY to transmit");
     if (m_txMachineState == READY)
