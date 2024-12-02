@@ -1,10 +1,10 @@
-SCALEUP 128
+SCALEUP 8
 ENABLE_QCN 1
 USE_DYNAMIC_PFC_THRESHOLD 1
 
 PACKET_PAYLOAD_SIZE 1000
 
-TOPOLOGY_FILE ../../scratch/topology/1k.txt
+TOPOLOGY_FILE ../../scratch/topology/128_nodes_16_switch_topology.txt
 FLOW_FILE ../../scratch/output/flow.txt
 TRACE_FILE ../../scratch/output/trace.txt
 TRACE_OUTPUT_FILE ../../scratch/output/mix.tr
