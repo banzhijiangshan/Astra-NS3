@@ -36,6 +36,8 @@ SeqTsHeader::SeqTsHeader()
       m_ts(Simulator::Now().GetTimeStep())
 {
     NS_LOG_FUNCTION(this);
+    if (IntHeader::mode == 1)
+        ih.ts = Simulator::Now().GetTimeStep();
 }
 
 void
@@ -60,15 +62,15 @@ SeqTsHeader::GetTs() const
 }
 
 void
-SeqTsHeader::SetPG (uint16_t pg)
+SeqTsHeader::SetPG(uint16_t pg)
 {
-	m_pg = pg;
+    m_pg = pg;
 }
 
 uint16_t
-SeqTsHeader::GetPG (void) const
+SeqTsHeader::GetPG(void) const
 {
-	return m_pg;
+    return m_pg;
 }
 
 TypeId
@@ -98,11 +100,13 @@ uint32_t
 SeqTsHeader::GetSerializedSize() const
 {
     NS_LOG_FUNCTION(this);
-	return GetHeaderSize();
+    return GetHeaderSize();
 }
 
-uint32_t SeqTsHeader::GetHeaderSize(void){
-	return 6 + IntHeader::GetStaticSize();
+uint32_t
+SeqTsHeader::GetHeaderSize(void)
+{
+    return 6 + IntHeader::GetStaticSize();
 }
 
 void
@@ -123,11 +127,11 @@ SeqTsHeader::Deserialize(Buffer::Iterator start)
     NS_LOG_FUNCTION(this << &start);
     Buffer::Iterator i = start;
     m_seq = i.ReadNtohU32();
-    m_pg =  i.ReadNtohU16 ();
+    m_pg = i.ReadNtohU16();
 
     // read IntHeader
     ih.Deserialize(i);
-    return GetSerializedSize ();
+    return GetSerializedSize();
 }
 
 } // namespace ns3
