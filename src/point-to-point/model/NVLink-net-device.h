@@ -43,6 +43,7 @@ class NVLinkNetDevice : public PointToPointNetDevice
     void Receive(Ptr<NVPacket> p);
     bool SwitchSend(Ptr<NVPacket> p);
     void SetQueue(Ptr<Queue<NVPacket>> queue);
+    void SetQueueSize(uint32_t queueSize);
 
     Ptr<NVLink> m_channel;
     Ptr<Queue<NVPacket>> m_queue;
