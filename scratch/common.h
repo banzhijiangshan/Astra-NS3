@@ -31,6 +31,8 @@
 #include "ns3/point-to-point-helper.h"
 #include "ns3/qbb-channel.h"
 #include "ns3/qbb-helper.h"
+#include "ns3/queue-size.h"
+#include "ns3/queue.h"
 #include <ns3/rdma-client-helper.h>
 #include <ns3/rdma-client.h>
 #include <ns3/rdma-driver.h>
@@ -944,6 +946,10 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
         DynamicCast<QbbNetDevice>(d.Get(1))->TraceConnectWithoutContext(
             "QbbPfc",
             MakeBoundCallback(&get_pfc, pfc_file, DynamicCast<QbbNetDevice>(d.Get(1))));
+        DynamicCast<QbbNetDevice>(d.Get(0))->GetQueue()->SetMaxSize(
+            QueueSize(QueueSizeUnit::PACKETS, UINT32_MAX));
+        DynamicCast<QbbNetDevice>(d.Get(1))->GetQueue()->SetMaxSize(
+            QueueSize(QueueSizeUnit::PACKETS, UINT32_MAX));
     }
     // Added by myself
     NVHelper nv;
@@ -959,6 +965,8 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
             NetDeviceContainer d = nv.Install(n.Get(index), nvsw);
             DynamicCast<NVLinkNetDevice>(d.Get(0))->m_flowfinishCb = MakeCallback(NV_finish);
             DynamicCast<NVLinkNetDevice>(d.Get(1))->m_flowfinishCb = MakeCallback(NV_finish);
+            DynamicCast<NVLinkNetDevice>(d.Get(0))->SetQueueSize(UINT32_MAX);
+            DynamicCast<NVLinkNetDevice>(d.Get(1))->SetQueueSize(UINT32_MAX);
 
             nbr2if[n.Get(index)][n.Get(i)].idx =
                 DynamicCast<NVLinkNetDevice>(d.Get(0))->GetIfIndex();
@@ -1190,6 +1198,6 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
 
     // schedule buffer monitor
     FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
-    Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
+    // Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
     return;
 }

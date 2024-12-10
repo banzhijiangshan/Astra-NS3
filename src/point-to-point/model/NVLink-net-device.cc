@@ -8,6 +8,7 @@
 #include "ns3/mac48-address.h"
 #include "ns3/p2p-NVlink-channel.h"
 #include "ns3/pointer.h"
+#include "ns3/queue-size.h"
 #include "ns3/queue.h"
 #include "ns3/simulator.h"
 #include "ns3/trace-source-accessor.h"
@@ -120,6 +121,7 @@ NVLinkNetDevice::Receive(Ptr<NVPacket> packet)
     }
     else
     {
+        // printf("%d\n", packet->m_leftnum);
         if (packet->m_leftnum == 0)
             m_flowfinishCb(packet->m_src, packet->m_dst, packet->totalSize, packet->srcPort);
     }
@@ -170,6 +172,13 @@ void
 NVLinkNetDevice::SetQueue(Ptr<Queue<NVPacket>> queue)
 {
     m_queue = queue;
+}
+
+void
+NVLinkNetDevice::SetQueueSize(uint32_t queueSize)
+{
+    QueueSize qSize(QueueSizeUnit::PACKETS, queueSize);
+    m_queue->SetMaxSize(qSize);
 }
 
 } // namespace ns3
