@@ -100,6 +100,7 @@ unordered_map<uint64_t, double> rate2pmax;
 // map rank id to nodes id on it
 unordered_map<int, set<int>> mpirank_nodes_map;
 uint32_t scale_up_num = 8;
+bool enable_scaleup = false;
 
 /************************************************
  * Runtime varibles
@@ -702,6 +703,15 @@ ReadConf(string network_configuration)
         {
             conf >> scale_up_num;
         }
+        else if (key.compare("ENABLE_SCALEUP") == 0)
+        {
+            uint32_t v;
+            conf >> v;
+            if (v == 1)
+                enable_scaleup = true;
+            else
+                enable_scaleup = false;
+        }
         fflush(stdout);
     }
     conf.close();
@@ -754,12 +764,16 @@ SetupNetwork(void (*qp_finish)(FILE*, Ptr<RdmaQueuePair>),
     // NPU_num: node_num - switch_num
     // NPU_id: 0 to NPU_num - 1
     // switch_id: NPU_num to node_num - 1
-    // NVswitch_num: NPU_num / 8
+    // NVswitch_num: NPU_num / scale_up_num
     // NVswitch_id: node_num to node_num + NVswitch_num - 1
 
     // Added by myself
     uint32_t npu_num = node_num - switch_num;
-    uint32_t NVswitch_num = npu_num / scale_up_num;
+    uint32_t NVswitch_num;
+    if (enable_scaleup)
+        NVswitch_num = npu_num / scale_up_num;
+    else
+        NVswitch_num = 0;
     uint32_t All_num = node_num + NVswitch_num;
     // printf("%d %d %d\n", npu_num, NVswitch_num, All_num);
     //////////////////
